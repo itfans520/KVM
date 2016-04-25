@@ -7,3 +7,11 @@ egrep 'xvm' /proc/cpuinfo
 
 #AMD CPU 架构检测命令
 egrep 'svm' /proc/cpuinfo
+
+# 或者intel与AMD 一起检查
+egrep '(svm | xvm)' /proc/cpuinfo
+
+
+### 用户空间工具
+（1）qemu
+（2）libvirt(API)   #这个更好

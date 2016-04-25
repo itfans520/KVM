@@ -1,0 +1,9 @@
+### KVM 安装
+yum grouplist 'virtual*'
+
+yum groupinstall 'virtual*'
+
+## 安装好KVM的相关组件后，检查libvirtd服务是否为开启状态
+systemctl is-active libvirtd
+# 检查 libvirtd 是否为开机启动
+systemctl is-enabled libvirtd
