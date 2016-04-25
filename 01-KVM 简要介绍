@@ -1,0 +1,9 @@
+### KVM 属于“硬件辅助虚拟化”，需要硬件宿主机支持虚拟化功能
+
+## 检查硬件是否支持虚拟化功能
+
+#intel CPU 架构检测命令
+egrep 'xvm' /proc/cpuinfo
+
+#AMD CPU 架构检测命令
+egrep 'svm' /proc/cpuinfo
