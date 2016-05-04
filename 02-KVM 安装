@@ -1,4 +1,4 @@
-### KVM 安装
+### 红帽 系统 安装 KVM
 yum grouplist 'virtual*'
 
 yum groupinstall 'virtual*'
@@ -7,3 +7,25 @@ yum groupinstall 'virtual*'
 systemctl is-active libvirtd
 # 检查 libvirtd 是否为开机启动
 systemctl is-enabled libvirtd
+
+### Centos 系统 安装 KVM
+
+# 安装 KVM及相关依赖包
+yum -y install kvm python-virtinst libvirt  bridge-utils virt-manager qemu-kvm-tools  virt-viewer  virt-v2v
+
+# 关闭selinux
+vim /etc/sysconfig/selinux
+selinux=disabled
+
+#确认libvirtd是否正常启动 
+/etc/init.d/libvirtd restart
+
+
+
+
+
+
+
+
+
+

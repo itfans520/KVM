@@ -1,2 +1,9 @@
 ### 启动虚拟机管理器
 virt-manager
+
+https://virt-manager.org/
+
+# yum install virt-manager (Fedora)
+# apt-get install virt-manager (Debian)
+# emerge virt-manager (Gentoo)
+# pkg_add virt-manager 

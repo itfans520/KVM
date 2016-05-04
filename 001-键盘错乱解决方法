@@ -1,0 +1,31 @@
+KVM通过virt-manager远程管理guest时键盘错乱解决方法 
+
+一、命令行方式
+
+关闭要调整的虚拟机，编辑虚拟机配置文件
+
+#virsh edit 'your vm name'
+
+找到配置文件中的以下字段：
+
+<graphics type='vnc' port='-1'/>
+
+加入键盘的语言布局后如下：
+
+<graphics type='vnc' port='-1' keymap='en-us'/>
+
+保存退出后，重新载入虚拟机配置文件
+
+#virsh create /etc/libvirt/qemu/'your vm name'.xml
+
+如果要避免这种情况，在使用virt-install安装的时候，就加入键盘布局的字段
+
+--keymap=en-us 
+
+二、virt-manager方式
+
+在虚拟关闭的状态下，通过virt-manager界面选中相应的虚拟机:
+
+open-->Details-->Display VNC-->keymap-->en-us
+
+保存后再启动虚拟机就可以了
