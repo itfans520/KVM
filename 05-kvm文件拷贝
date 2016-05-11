@@ -1,0 +1,23 @@
+即使虚拟机不能正常启动，也可以经里面的数据进行转移
+
+### 映射raw格式文件（*.img）
+
+filesname.img 中包含两个部分，分别是：
+/
+swap
+
+执行 kpartx -av filesname.img 后
+就会将filesname.img文件的两个分区映射到物理机的两个文件，分别是：
+loop0 余 filesname.img的文件名，在/dev/mapper/中
+映射关系：
+filesname_root对应的是/
+filesname_swap对应的是swap
+
+删除挂载
+kpartx -d filesname.img
+
+### 映射 qcow2 格式文件
+需要先检查系统是否包含nbd模块
+lsmod | grep -i nbd
+
+如果没有，需要先进性该模块的安装

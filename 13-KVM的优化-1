@@ -1,0 +1,48 @@
+（1）删除不必要的设备
+（2）CPU优化，方法：
+注：所有Guest CPU 的总数不要超过物理机CPU的总数，如果超过了（over commit），系统会有报警。
+会对性能造成严重影响。
+CPU的配置选择：复制主机CPU配置
+
+（3）内存优化
+<1>KSM 相同页合并
+<2>对内存做限制，防止出问题的虚拟机无节制的消耗宿主机内存，造成其它虚拟机的异常。
+virsh memtune 虚拟机名称 —— 查看可调节的内存参数，分别为：
+hard_limit:无限制（默认配置，配置单位：kb）
+soft_limit：无限制（默认配置，配置单位:kb）
+swap_hard_limit:无限制（默认配置，配置单位：kb）
+#对虚拟机内存进行“硬限制”
+virsh memtune 虚拟机名称 --hard-limit 102400(100MB)
+
+#使用内存大页进行管理（hugpages）
+
+（4）通过IO进行调整
+
+（5）通过tuned进行优化
+# 安装tuned，yum install tuned*
+# 查看可操作的优化方案
+tuned-adm list 
+[root@bogon ~]# tuned-adm list
+Available profiles:
+- server-powersave
+- latency-performance
+- virtual-guest
+- default
+- spindown-disk
+- laptop-ac-powersave
+- virtual-host
+- throughput-performance
+- sap-hana
+- sap-netweaver
+- enterprise-storage
+- laptop-battery-powersave
+- desktop-powersave
+- sap-hana-vmware
+Current active profile: default
+
+根据当前需要进行优化主机的角色，可以调整优化方案（这里的参数Current active profile: default，当前方案为default）
+# 调整的命令：
+tuned-adm profile virtual-host （可选）
+
+#进入“/etc/tune-profiles/（ 不同的profile以目录形式存在！）”目录，可以看到有很多优化的方案的目录，进入对应方案的目录，可以调整相关优化参数。
+

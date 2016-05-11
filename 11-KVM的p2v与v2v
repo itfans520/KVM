@@ -1,0 +1,56 @@
+### P2V
+步骤：
+A机：物理机
+B机：宿主机
+
+（1）在B上安装P2V软件，配置好虚拟化信息；
+（2）到A机上使用P2V光盘引导系统，然后把物理机copy到B上，作为一个虚拟机。
+
+Linux P2V方法，具体：
+#在B机上安装虚拟化软件
+yum groupinstall 'virtualization*'
+#启动virt-manager
+#在B机上安装P2V软件
+安装virt-p2v-0.9.1-2.20130730.1.el6.centos.noarch.rpm（需要到网上下载）
+rpm -ivh virt-p2v-0.9.1-2.20130730.1.el6.centos.noarch.rpm
+安装完成后，执行
+rpm -qlp virt-p2v-0.9.1-2.20130730.1.el6.centos.noarch.rpm
+会生成一个镜像文件：/usr/share/virt-p2v/virt-p2v-0.9.1-2.20130730.1.el6.centos.iso
+#接着，安装V2V软件
+yum install *v2v* -y
+#将该光盘copy出来，刻录为镜像盘（/usr/share/virt-p2v/virt-p2v-0.9.1-2.20130730.1.el6.centos.iso）
+#刻录镜像后，关闭A机（物理机），将该光盘放入将要进行p2v的A机（物理机）中，并用该光盘引导系统开机
+#在B机（宿主机）中编辑/etc/virt-v2v.conf文件，确定被导入的p2v虚拟机将要存放在哪个存储池中
+方法：取消virt-v2v.conf中的注释
+#到A机引导后的p2v引导界面，输入相应的信息，
+Destination profile：libvirt
+调整留存的设备参数及内存、CPU等
+convert ，开始转换并传输到B机（宿主机）
+#此时，在B机的存储池对应目录中，就可以看到被转换的文件了，virt-manager中也可以看到了。
+
+Windows P2V 方法，具体
+步骤：
+（1）先在A机上把半虚拟化驱动安装上去；
+（2）再安装ntfs支持包到B机
+（3）关机（A物理机）
+（4）在用P2V软件引导
+
+### v2v
+# vmdk 格式迁移
+方法：copy vmdk文件及其配置文件
+转换vmdk为qcow2格式文件
+qemu-img convert -f vmdk -O qcow2 src_filesname.vmdk /path/dst_filesname.qcow2
+（原有vmdk文件可以删除了）
+转换vmx格式的配置文件，使用virrt-goodies_0.4.tar.gz
+tar zxvf virrt-goodies_0.4.tar.gz
+cd virrt-goodies_0.4
+./vmware2libvirt -f ../ src_filesname.vmx > ../dst_filesname.xml
+将dst_filesname.xml文件copy到/etc/lib/libvirt/qemu中
+修改dst_filesname.xml :
+<driver name='qemu' type='qcow2'/> #对应的磁盘格式类型
+<disk>……</disk> 类型参数，<source files='/path/dst_filesname.qcow2'>
+find / -name qemu-kvm中的路径，替换掉xml文件中<emulator>/path/path</emulator>内容
+退出xml编辑，执行下列命令使xml文件生效
+virsh define dst_filesname.xml
+运行virt-manager，修改磁盘总线参数为：virtio（网卡亦相同，），storage format：qcow2；
+

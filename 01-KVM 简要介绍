@@ -15,3 +15,24 @@ egrep '(svm | xvm)' /proc/cpuinfo
 ### 用户空间工具
 （1）qemu
 （2）libvirt(API)   #这个更好
+
+### 通过帮助查看将要执行的命令
+virsh --help | grep net or disk ......
+
+
+### 启动虚拟机
+virsh start 虚拟机名称
+
+### 重启虚拟机
+virsh reboot 虚拟机名称
+
+### 快速关闭虚拟机
+virsh destroy 虚拟机名称
+
+### 查看虚拟机中对应的硬盘的个数与位置
+virsh dombliklist 虚拟机名称
+
+### 创建虚拟机磁盘文件
+qemu-img create -f raw filename.img 10G
+查看刚刚创建的文件的信息
+qemu-img info filesname.img

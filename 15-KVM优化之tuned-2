@@ -1,0 +1,53 @@
+红帽推出的一个动态调优方案，用户可以在不同的时间段内采用不同的调优方案。由于以服务进程形式存在，就可以很方便的和crontab结合！Tuned 是监控并收集各个系统组件用量数据的守护进程，并可使用那些信息根据需要动态调整系统设置。它可以对 CPU 和网络使用的更改作出反应，并调整设置以提高活动设备的性能或者降低不活跃设备的电源消耗。
+    伴随它的工具 ktune 结合 tuned-adm 工具提供大量预先配置的调整分析以便在大量具体使用案例中提高性能并降低能耗。编辑这些配置或者创建新配置可生成为系统定制的性能解决方案。
+
+    安装：yum install tuned -y
+    启动：/etc/init.d/tuned start
+          /etc/init.d/ktune start
+    查看系统中对于不同应用场景的调优方案
+[root@localhost Desktop]# tuned-adm list
+Available profiles:
+- default
+- enterprise-storage
+- server-powersave
+- throughput-performance
+- desktop-powersave
+- laptop-ac-powersave
+- latency-performance
+- laptop-battery-powersave
+- spindown-disk
+Current active profile: default
+    使用某种profile
+[root@localhost Desktop]# tuned-adm profile server-powersave
+Stopping tuned:                                            [  OK  ]
+Switching to profile 'server-powersave'
+Applying ktune sysctl settings:
+/etc/ktune.d/tunedadm.conf:                                [  OK  ]
+Calling '/etc/ktune.d/tunedadm.sh start':                  [  OK  ]
+Applying sysctl settings from /etc/sysctl.conf
+Starting tuned:                                            [  OK  ]
+关于一些profile的说明：
+  default
+    默认节电配置。这是最基本的节点配置。它只启用磁盘和 CPU 插件。注：这与关闭 tuned-adm 不同，关闭该程序会同时禁用 tuned 和 ktune。
+  latency-performance
+    典型延迟性能调试的服务器配置。它禁用 tuned 和 ktune 节能机制。cpuspeed 模式改为 performance。每个设备的 I/O 提升程序改为 deadline。对于服务的电源管理质量，将 cpu_dma_latency 设定为 0。
+  throughput-performance
+    用于典型吞吐性能调整的服务器侧写。如果系统没有企业级存储则建议使用这个侧写。它与 latency-performance 相同，只是：
+          将 kernel.sched_min_granularity_ns（调度程序最小优先占用时间间隔）设定为 10 毫秒，
+          将kernel.sched_wakeup_granularity_ns（调度程序唤醒间隔时间）设定为 15 毫秒。
+          将 vm.dirty_ratio（虚拟机脏数据比例）设定为 40%，并启用透明超大页面。
+  enterprise-storage
+    建议最企业级服务器配置中使用这个侧写，其中包括电池备份控制程序缓存保护以及管理磁盘缓存。它与 throughput-performance 配置类似，只是文件系统要使用 barrier=0 重新挂载。
+  virtual-guest
+    建议最企业级服务器配置中使用这个侧写，其中包括电池备份控制程序缓存保护以及管理磁盘缓存。它与 throughput-performance 类似，只是：
+          将 readahead 值设定为 4x，同时不使用 barrier=0 重新挂载的 root/boot 文件系统。
+  virtual-host
+    根据 enterprise-storage 配置，virtual-host 还可减少可置换的虚拟内存，并启用更多集合脏页写回。您可以在红帽企业版 Linux 6.3 以及之后的版本中找到这个配置，同时推荐在虚拟化主机中使用这个配置，包括 KVM 和红帽企业版 Linux 虚拟化主机。
+
+    配置文件：/etc/tune-profiles/ 不同的profile以目录形式存在！
+
+    制作适合自己应用场景的调优方案：
+        cd  /etc/tune-profiles;
+        cp -r enterprise-storage/ my-server;
+        cd my-server/
+        修改响应的配置文件，添加调优参数

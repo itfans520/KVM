@@ -1,0 +1,49 @@
+### KSM —— 合并相同页
+
+# （1）开启 KSM
+cd /sys/kernel/mm/ksm
+其中，run 即为 是否开启KSM功能
+cat run 
+0 为 不开启（默认配置）
+1 为 开启
+
+需要通过echo 重定向对run的参数进行修改
+echo 1 > run
+
+注意：由于是内存中的参数值，所以就算使用vi编辑器
+是无法修改的。
+
+run的参数值需要写脚本实时监控，会自动变为0
+
+# （2）修改 pages_to_scan 参数
+作用：在查看所有page的时候，每次查看多少个page。
+用于查找相同的page。
+这个值越大越好，当然，其也会消耗一部分内存。
+但是，这个值调到2000以上就无效了。
+
+##########
+监控run 的脚本文件
+示例-1
+
+#!/bin/bash
+A=`wc -m 0908.txt |awk '{print $1}'`
+B=`more 111.txt`
+if [ $A -gt $B ];
+then echo YES>211.txt;
+echo $A>111.txt
+else
+>211.txt
+fi
+
+0908.txt <---is your log.
+111.txt<---is the test file.
+211.txt<---is you echo yes's file.
+
+示例-2：
+用cksum定期判断文件的校验和是否变化， 变化则输出, 将前一次校验和放在SaveSumFile里面
+previousSum=`cat SaveSumFile`
+currentSum=`cksum filename | awk '{print $1}'`
+if [ x"$previousSum"  != x"$currentSum" ];
+  echo yes > dstfile
+fi
+echo $currentSum > SaveSumFile

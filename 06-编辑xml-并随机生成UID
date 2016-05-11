@@ -1,0 +1,10 @@
+uuidgen
+copy 随机生成的uid序列号
+将其替换到xml文件中的uid处（在name下方）
+
+<name>……</name> 要替换成与文件名相同
+
+<drive>……</drive> 修改文件名称与类型
+
+执行virsh define filesname.xml后，
+就可以在console中看到新建的虚拟机了。

@@ -1,0 +1,27 @@
+重要信息：
+通过下面这种方式挂在硬盘，一旦通过destroy方式关闭虚拟机，
+磁盘挂在将会失效（被挂载的虚拟机磁盘将丢失）
+
+### 创建虚拟机磁盘文件
+qemu-img create -f raw filesname.img 10G
+
+### 查看当前虚拟机中对应的磁盘与数量
+qemu-img domblklist 虚拟机名称
+
+### 关闭虚拟机
+qemu-img destory 虚拟机名称
+
+### 挂载刚刚创建的虚拟机磁盘文件
+virsh attach-disk 被挂载的虚拟机名称 /kvm/filesname.img vdb(磁盘名称)
+
+重要 ### 看清当前虚拟机中将要删除磁盘的名称
+qemu-img domblklist 虚拟机名称
+
+### 删除被挂在的磁盘
+virsh detach-disk 目标虚拟机名称 vdb 磁盘名称
+
+###　通过修改ｘｍｌ文件，可以实现永久挂载硬盘
+virsh edit 目标虚拟机名称
+复制<disk>……</disk>内容
+修改target名称
+修改文件位置及名称，并修改slot值，实现磁盘的永久挂载

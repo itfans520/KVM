@@ -1,0 +1,14 @@
+主要为图形化配置
+
+### 查看当前宿主机的网络使用情况
+virsh net-list
+
+### 可以通过修改网络xml配置文件的方式修改宿主机的网络配置
+默认安装位置在/var/lib/libvirt/network中
+
+### 可以通过复制网络xml文件，并修改里面的所有内容，来复制
+网络配置；
+通过 virsh net-create filesname.xml 的方式加载这个
+网络配置文件
+通过 virsh net-autostart 网络名称，来使这个网络配置实现开机
+自启动

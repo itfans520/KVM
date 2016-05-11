@@ -1,0 +1,25 @@
+通过挂载逻辑卷方式扩容
+
+（1）分配磁盘空间
+（2）查看磁盘情况
+cat /proc/partitiong
+（3）设置逻辑卷
+pvcreate /dev/sdc
+（4）创建逻辑卷名称
+vgcreate vg1 /dev/sdc
+（5）分配逻辑卷空间
+lvcreate -L 10G -n lv0 vg1
+（6）查看新的卷信息
+mkfs.xfs /dev/vg1/lv0
+（7）创建一个目录
+mkdir test
+（8）将新建的卷挂载到这个目录
+mount /dev/vg1/lv0 /test
+（9）将新挂载的磁盘添加到fstab中，下次开机直接挂载
+vim /etc/fstab
+/dev/vg1/lv0 /kvm xfs defaults 0 0
+
+### 创建一个10GB的img卷文件
+作为创建新的虚拟机所用，这样做的好处就是：
+该虚拟机的可用容量与被分配的卷空间大小相同，
+可保证磁盘空间占用的用量可控。

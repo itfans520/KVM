@@ -1,0 +1,22 @@
+需要3个角色，分别是：
+（1）server-1
+（2）server-2
+（3）共享存储（iscsi硬盘安装）
+
+#共享存储服务器smb一个磁盘空间共享出去
+
+#到server-1上，启动virt-manager，添加iscsi存储池
+选择iscsi方式，目标路径选择默认值（不要修改）
+主机名是共享存储的IP地址
+源：共享存储中iscsi的磁盘，如iqn.2015-11.cc.rhce.disk
+
+#到server-2上，启动virt-manager，添加iscsi存储池（与server-1方法相同）
+
+#到server-1上安装虚拟机
+编辑hosts文件
+10.10.10.11	server-1.test.com
+10.10.10.12	server-2.test.com
+将该hosts文件copy至server-2,进行替换
+
+
+## 基于这些虚拟机使用 共享存储
